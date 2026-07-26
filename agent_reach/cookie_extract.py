@@ -288,10 +288,10 @@ def configure_from_browser(browser: str, config) -> List[Tuple[str, bool, str]]:
         if cookie_str and "xq_a_token" in cookie_str:
             config.set("xueqiu_cookie", cookie_str)
             n_cookies = len(cookie_str.split(";"))
-            results_list.append(("Xueqiu", True, f"{n_cookies} cookies (含 xq_a_token)"))
+            results_list.append(("Xueqiu", True, f"{n_cookies} cookies ( xq_a_token)"))
         elif cookie_str:
             results_list.append(("Xueqiu", False,
-                                 f"找到 {len(cookie_str.split(';'))} 个 Cookie 但缺少 xq_a_token，"
-                                 f"请先在 {browser} 中登录 xueqiu.com"))
+                                 f" {len(cookie_str.split(';'))}  Cookie  xq_a_token,"
+                                 f" {browser} log in xueqiu.com"))
 
     return results_list

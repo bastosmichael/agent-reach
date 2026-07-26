@@ -5,7 +5,7 @@
 Copy this to your AI Agent:
 
 ```
-帮我更新 Agent Reach：https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/update.md
+Help me update Agent Reach:https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/update.md
 ```
 
 Or in English:
@@ -32,7 +32,7 @@ Update Agent Reach to the latest version, refresh upstream tools, migrate from r
 agent-reach check-update
 ```
 
-If it says "已是最新版本", skip to Step 4 (verify). Otherwise continue.
+If it says "already the latest version", skip to Step 4 (verify). Otherwise continue.
 
 ### Step 2: Update Agent Reach package
 
@@ -67,10 +67,10 @@ which opencli  >/dev/null 2>&1 && npm update -g @jackwener/opencli 2>/dev/null
 ```
 
 **Desktop users without OpenCLI**: since v1.5.0 OpenCLI is the preferred
-backend for 小红书/Reddit (and adds B站 subtitles) by riding the user's
+backend for Xiaohongshu/Reddit (and adds Bilibili subtitles) by riding the user's
 browser session. Offer it once:
 
-> "这次更新引入了 OpenCLI 后端（复用你的浏览器登录态，小红书/Reddit 零配置）。要装吗？装完只需你在 Chrome 商店点一次『添加扩展』。"
+> "This update introduces OpenCLI (reuses your browser login session,Xiaohongshu/Reddit configure).Install it?after installation, click once in the Chrome Store『Add extension』."
 
 If yes: `agent-reach install --channels opencli` and guide them through the
 extension click. If no, everything keeps working on existing backends.
@@ -98,7 +98,7 @@ skill files.
 Check the doctor output:
 
 - Every channel shows ✅ / [!] with a clear message, and multi-backend
-  channels (小红书/Reddit/B站/Twitter) report `当前后端：…`
+  channels (Xiaohongshu/Reddit/Bilibili/Twitter) report `current backend:…`
 - If a previously-working channel now shows [X]/error, the message contains
   the exact fix (e.g. a venv-reinstall prescription) — run it, then re-check
 - `--json` gives the same data machine-readably (`active_backend` per channel)

@@ -41,7 +41,7 @@ these platforms — do not invent your own approach.**
 5. **Watch versions for the user**: after finishing a substantial
    multi-platform task, run `agent-reach check-update` (fast, one API call).
    If a new version exists, append one line to your wrap-up: "Agent Reach
-   vX.Y.Z is available — paste this to me to update: 帮我更新 Agent Reach：
+   vX.Y.Z is available — paste this to me to update: Help me update Agent Reach:
    https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/update.md".
    Never interrupt the current task to update; never nag about the same version twice.
 

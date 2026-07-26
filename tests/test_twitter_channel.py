@@ -25,7 +25,7 @@ def test_check_twitter_cli_found_and_auth_ok():
         status, message = channel.check()
     assert status == "ok"
     assert "twitter-cli" in message
-    assert "完整可用" in message
+    assert "fully available" in message
     assert channel.active_backend == "twitter-cli"
 
 
@@ -41,8 +41,8 @@ def test_check_twitter_cli_found_auth_missing():
     ):
         status, message = channel.check()
     assert status == "warn"
-    assert "未认证" in message
-    # 未认证是业务态：工具进程活着，后端仍可用
+    assert "not authenticated" in message
+    # not authenticated:Tool,available
     assert channel.active_backend == "twitter-cli"
 
 
@@ -78,7 +78,7 @@ def test_check_bird_fallback_auth_missing():
     ):
         status, message = channel.check()
     assert status == "warn"
-    assert "未配置认证" in message
+    assert "authentication is not configured" in message
 
 
 # --- neither installed ---
@@ -117,7 +117,7 @@ def test_twitter_cli_preferred_over_bird():
 # --- broken install (stale venv shim) ---
 
 def test_check_twitter_cli_broken_reports_error_with_reinstall_hint():
-    """which 命中但 exec 抛 FileNotFoundError（venv 断链）→ error + 重装处方。"""
+    """which  exec  FileNotFoundError(venv broken link)→ error + reinstall."""
     channel = TwitterChannel()
     with patch(
         "shutil.which",
@@ -125,14 +125,14 @@ def test_check_twitter_cli_broken_reports_error_with_reinstall_hint():
     ), patch("subprocess.run", side_effect=FileNotFoundError("/usr/local/bin/twitter")):
         status, message = channel.check()
     assert status == "error"
-    assert "无法执行" in message
+    assert "cannot execute" in message
     assert "uv tool install --force twitter-cli" in message
     assert "pipx reinstall twitter-cli" in message
     assert channel.active_backend is None
 
 
 def test_check_twitter_cli_broken_falls_back_to_bird():
-    """twitter-cli 断链但 bird 健康 → 回退到 bird，后端正确归属。"""
+    """twitter-cli broken link bird  →  bird,."""
     channel = TwitterChannel()
 
     def which_side_effect(name):
@@ -155,14 +155,14 @@ def test_check_twitter_cli_broken_falls_back_to_bird():
 
 
 def test_unauthenticated_twitter_cli_does_not_block_working_opencli():
-    """warn 候选不得屏蔽排在后面的 ok 候选(Codex review 发现)。"""
+    """warn  ok (Codex review )."""
     channel = TwitterChannel()
     with patch.object(
         TwitterChannel, "_check_twitter_cli",
-        return_value=("warn", "twitter-cli 已安装但未认证"),
+        return_value=("warn", "twitter-cli is installed but not authenticated"),
     ), patch.object(
         TwitterChannel, "_check_opencli",
-        return_value=("ok", "OpenCLI 可用（复用浏览器登录态）"),
+        return_value=("ok", "OpenCLI available(reuse browserlogin session)"),
     ), patch.object(TwitterChannel, "_check_bird", return_value=None):
         status, msg = channel.check()
     assert status == "ok"
@@ -173,12 +173,12 @@ def test_all_warn_falls_back_to_first_warn():
     channel = TwitterChannel()
     with patch.object(
         TwitterChannel, "_check_twitter_cli",
-        return_value=("warn", "twitter-cli 未认证"),
+        return_value=("warn", "twitter-cli not authenticated"),
     ), patch.object(
         TwitterChannel, "_check_opencli",
-        return_value=("warn", "扩展未连接"),
+        return_value=("warn", "extension is not connected"),
     ), patch.object(TwitterChannel, "_check_bird", return_value=None):
         status, msg = channel.check()
     assert status == "warn"
     assert channel.active_backend == "twitter-cli"
-    assert "未认证" in msg
+    assert "not authenticated" in msg

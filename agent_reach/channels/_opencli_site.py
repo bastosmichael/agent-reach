@@ -32,9 +32,9 @@ class OpenCLISiteChannel(Channel):
         st = opencli_status()
         if not st.installed:
             return "off", (
-                f"未安装 {self.description} 后端。安装：\n"
+                f"not installed {self.description} .install:\n"
                 "  agent-reach install --channels opencli\n"
-                f"然后在 Chrome 里登录 {self.login_hint}"
+                f" Chrome log in {self.login_hint}"
             )
         if st.broken:
             return "error", st.hint
@@ -42,7 +42,7 @@ class OpenCLISiteChannel(Channel):
         self.active_backend = "OpenCLI"
         if st.ready:
             return "ok", (
-                f"OpenCLI 可用（复用浏览器登录态）。用法：{self.usage}。"
-                f"若提示登录，请先在 Chrome 里登录 {self.login_hint}"
+                f"OpenCLI available(reuse browserlogin session).:{self.usage}."
+                f"log in, Chrome log in {self.login_hint}"
             )
         return "warn", st.hint

@@ -22,7 +22,7 @@ def _has_js_runtime_config(config_path) -> bool:
 
 class YouTubeChannel(Channel):
     name = "youtube"
-    description = "YouTube 视频和字幕"
+    description = "YouTube videosubtitles"
     backends = ["yt-dlp"]
     tier = 0
 
@@ -33,26 +33,26 @@ class YouTubeChannel(Channel):
         return "youtube.com" in d or "youtu.be" in d
 
     def check(self, config=None):
-        # 真跑 yt-dlp --version 探活，区分未装 / venv 断链 / 跑不动
+        #  yt-dlp --version , / venv broken link / 
         probe = probe_command("yt-dlp", ["--version"], timeout=10, package="yt-dlp")
         if probe.status == "missing":
             self.active_backend = None
-            return "off", "yt-dlp 未安装。安装：pip install yt-dlp"
+            return "off", "yt-dlp not installed.install:pip install yt-dlp"
         if probe.status == "broken":
             self.active_backend = None
-            return "error", f"yt-dlp 已安装但无法执行\n{probe.hint}"
-        if not probe.ok:  # timeout / error：装了但跑不动
+            return "error", f"yt-dlp installcannot execute\n{probe.hint}"
+        if not probe.ok:  # timeout / error:
             self.active_backend = None
             detail = probe.hint or probe.output or probe.status
-            return "error", f"yt-dlp 无法正常运行：{detail}"
-        # yt-dlp 本体是活的；后面的 JS runtime/转写检查只影响 ok/warn，不影响后端归属
+            return "error", f"yt-dlp run:{detail}"
+        # yt-dlp ; JS runtime/ ok/warn,
         self.active_backend = "yt-dlp"
         # Check JS runtime
         has_js = shutil.which("deno") or shutil.which("node")
         if not has_js:
             return "warn", (
-                "yt-dlp 已安装但缺少 JS runtime（YouTube 必须）。\n"
-                "  安装 Node.js 或 deno，然后运行：agent-reach install"
+                "yt-dlp install JS runtime(YouTube must).\n"
+                "  install Node.js  deno,run:agent-reach install"
             )
         # Check yt-dlp config for --js-runtimes
         # Deno works out of the box; Node.js requires explicit config
@@ -61,10 +61,10 @@ class YouTubeChannel(Channel):
             ytdlp_config = get_ytdlp_config_path()
             if not _has_js_runtime_config(ytdlp_config):
                 return "warn", (
-                    f"yt-dlp 已安装但未配置 JS runtime。运行：\n  {render_ytdlp_fix_command()}"
+                    f"yt-dlp installnot configured JS runtime.run:\n  {render_ytdlp_fix_command()}"
                 )
         # Surface transcription readiness so `doctor` reports it.
-        msg = "可提取视频信息和字幕"
+        msg = "videosubtitles"
         if config is not None:
             providers = []
             if config.is_configured("groq_whisper"):
@@ -73,9 +73,9 @@ class YouTubeChannel(Channel):
                 providers.append("openai")
             if providers:
                 if not shutil.which("ffmpeg"):
-                    msg += "（音频转写需安装 ffmpeg）"
+                    msg += "(install ffmpeg)"
                 else:
-                    msg += f"，可转写音频（{'→'.join(providers)}）"
+                    msg += f",({'→'.join(providers)})"
         return "ok", msg
 
     def transcribe(self, url: str, *, provider: str = "auto", config=None) -> str:
