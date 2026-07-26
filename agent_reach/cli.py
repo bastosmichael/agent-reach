@@ -240,7 +240,7 @@ def _cmd_install(args):
         else:
             config.set("proxy", args.proxy)
             config.set("bilibili_proxy", args.proxy)  # legacy key
-            print(f"✅ 代理已保存（Agent 访问受限网络时使用）")
+            print(f"✅ proxysave(Agent access)")
 
     # ── Install core system dependencies (lightweight, always) ──
     print()
@@ -262,7 +262,7 @@ def _cmd_install(args):
 
     if server_skipped_opencli_channels:
         print()
-        print("  -- OpenCLI 需要桌面环境 + Chrome，服务器环境跳过："
+        print("  -- OpenCLI requires + Chrome,:"
               f"{', '.join(sorted(server_skipped_opencli_channels))}")
 
     # ── Install optional channels (only if --channels specified) ──
@@ -312,9 +312,9 @@ def _cmd_install(args):
     # Environment-specific advice
     if env == "server":
         print()
-        print("Tip: 部分平台对服务器 IP 有风控。")
-        print("   Reddit 必须登录态（rdt-cli + Cookie，见 doctor 提示），中国大陆网络还需代理。")
-        print("   保存代理供 Agent 使用：agent-reach configure proxy http://user:pass@ip:port")
+        print("Tip:  IP .")
+        print("   Reddit mustlogin session(rdt-cli + Cookie, doctor ),Mainland Chinaproxy.")
+        print("   saveproxy Agent :agent-reach configure proxy http://user:pass@ip:port")
         print("   Cheap option: https://www.webshare.io ($1/month)")
 
     # Test channels
@@ -344,9 +344,9 @@ def _cmd_install(args):
 
         # Star reminder
         print()
-        print("如果 Agent Reach 帮到了你，给个 Star 让更多人发现它吧：")
+        print("If Agent Reach , Star :")
         print("   https://github.com/Panniantong/Agent-Reach")
-        print("   只需一秒，对独立开发者意义很大。谢谢！")
+        print("   ,.!")
     else:
         print()
         print("Dry run complete. No changes were made.")
@@ -735,17 +735,17 @@ def _install_xhs_deps():
 
     print("Setting up XiaoHongShu...")
     if _detect_environment() == "server":
-        print("  服务器环境推荐 xiaohongshu-mcp（自带无头浏览器，扫码登录）：")
-        print("    1. 下载 binary：https://github.com/xpzouying/xiaohongshu-mcp/releases")
-        print("       （建议放到 ~/.agent-reach/tools/ 下）")
-        print("    2. 启动服务（首次运行会下载约 150MB 浏览器，请等待完成）")
-        print("    3. 扫码登录后接入：mcporter config add xiaohongshu http://localhost:18060/mcp")
-        print("    4. 验证：agent-reach doctor")
+        print("  recommended xiaohongshu-mcp(headless browser,scan QR codelog in):")
+        print("    1.  binary:https://github.com/xpzouying/xiaohongshu-mcp/releases")
+        print("       ( ~/.agent-reach/tools/ )")
+        print("    2. (run 150MB browser,)")
+        print("    3. scan QR codelog in:mcporter config add xiaohongshu http://localhost:18060/mcp")
+        print("    4. :agent-reach doctor")
         return
 
     _install_opencli_deps()
     if shutil.which("xhs"):
-        print("  ✅ 检测到存量 xhs-cli，将作为备选后端继续可用")
+        print("  ✅  xhs-cli,available")
 
 
 def _install_opencli_deps():
@@ -775,7 +775,7 @@ def _install_opencli_deps():
 
     if not shutil.which("npm"):
         print("  [!]  OpenCLI requires Node.js ≥ 20. Install Node first:")
-        print("       https://nodejs.org  （或 brew install node）")
+        print("       https://nodejs.org  ( brew install node)")
         return
 
     try:
@@ -789,10 +789,10 @@ def _install_opencli_deps():
     st = opencli_status()
     if st.installed and not st.broken:
         print("  ✅ OpenCLI installed")
-        print("  最后一步（必须手动，Chrome 安全限制）：安装浏览器扩展")
-        print(f"    1. 打开 {OPENCLI_EXTENSION_URL}")
-        print("    2. 点「添加至 Chrome」")
-        print("    3. 运行 `opencli doctor` 验证连接")
+        print("  Next steps (required in Chrome): install the browser extension")
+        print(f"    1.  {OPENCLI_EXTENSION_URL}")
+        print("    2. Click Add to Chrome")
+        print("    3. Run `opencli doctor` to verify the setup")
     else:
         print(f"  [!]  OpenCLI install failed. Run: npm install -g {OPENCLI_PACKAGE}")
 
@@ -805,10 +805,10 @@ def _install_reddit_deps():
     """
     if _detect_environment() != "server":
         _install_opencli_deps()
-        print("  Reddit 走 OpenCLI（浏览器里登录过 reddit.com 即可用）")
+        print("  Reddit  OpenCLI(browserlog in reddit.com available)")
         import shutil
         if shutil.which("rdt"):
-            print("  ✅ 检测到存量 rdt-cli，将作为备选后端继续可用")
+            print("  ✅  rdt-cli,available")
         return
 
     _install_rdt_cli()
@@ -1066,8 +1066,8 @@ def _cmd_configure(args):
         # bilibili_proxy key is kept in sync for older configs.
         config.set("proxy", value)
         config.set("bilibili_proxy", value)
-        print("✅ 代理已保存（供 Agent 在访问 Reddit/Twitter 等需要代理的网络时设置 HTTP_PROXY/HTTPS_PROXY）")
-        print("  Note: B站走 bili-cli，国内网络无需代理。")
+        print("✅ proxysave( Agent access Reddit/Twitter requiresproxy HTTP_PROXY/HTTPS_PROXY)")
+        print("  Note: Bilibili bili-cli,proxy.")
 
     elif args.key == "twitter-cookies":
         # Accept two formats:
@@ -1360,7 +1360,7 @@ def _configure_xhs_cookies(value):
                 [mcporter, "call", "xiaohongshu.check_login_status()"],
                 capture_output=True, encoding="utf-8", errors="replace", timeout=15,
             )
-            if "已登录" in result.stdout or "logged" in result.stdout.lower():
+            if "log in" in result.stdout or "logged" in result.stdout.lower():
                 print("✅ Login verified!")
             else:
                 print("[!] Login check returned unexpected result:")
@@ -1506,13 +1506,13 @@ def _cmd_setup():
     import shutil
     import subprocess
 
-    print("【推荐】全网搜索 — Exa（通过 mcporter）")
-    print("  免费，无需 API Key")
+    print("【recommended】search — Exa( mcporter)")
+    print("  free, API Key")
 
     if not shutil.which("mcporter"):
-        print("  当前状态: -- mcporter 未安装")
-        print("  安装：npm install -g mcporter")
-        print("  然后：mcporter config add exa https://mcp.exa.ai/mcp")
+        print("  status: -- mcporter not installed")
+        print("  install:npm install -g mcporter")
+        print("  :mcporter config add exa https://mcp.exa.ai/mcp")
         print()
     else:
         try:
@@ -1520,66 +1520,66 @@ def _cmd_setup():
                 ["mcporter", "config", "list"], capture_output=True, encoding="utf-8", errors="replace", timeout=10
             )
             if "exa" in r.stdout.lower():
-                print("  当前状态: ✅ 已配置")
+                print("  status: ✅ configured")
             else:
-                print("  当前状态: -- 未配置")
-                setup_now = input("  现在自动配置 Exa 吗？[Y/n]: ").strip().lower()
+                print("  status: -- not configured")
+                setup_now = input("  configure Exa ?[Y/n]: ").strip().lower()
                 if setup_now in ("", "y", "yes"):
                     add_r = subprocess.run(
                         ["mcporter", "config", "add", "exa", "https://mcp.exa.ai/mcp"],
                         capture_output=True, encoding="utf-8", errors="replace", timeout=10,
                     )
                     if add_r.returncode == 0:
-                        print("  ✅ Exa 已配置")
+                        print("  ✅ Exa configured")
                     else:
-                        print("  [!] 自动配置失败，请手动执行：")
+                        print("  [!] configurefailed,:")
                         print("     mcporter config add exa https://mcp.exa.ai/mcp")
         except Exception:
-            print("  [!] 无法检查 Exa 配置，请手动执行：")
+            print("  [!]  Exa configure,:")
             print("     mcporter config add exa https://mcp.exa.ai/mcp")
         print()
 
     # Step 2: GitHub token
-    print("【可选】GitHub Token — 提高 API 限额")
-    print("  无 token: 60 次/小时 | 有 token: 5000 次/小时")
-    print("  获取: https://github.com/settings/tokens (无需任何权限)")
+    print("【】GitHub Token —  API ")
+    print("   token: 60 / |  token: 5000 /")
+    print("  get: https://github.com/settings/tokens (any)")
     current = config.get("github_token")
     if current:
-        print(f"  当前状态: ✅ 已配置")
+        print(f"  status: ✅ configured")
     else:
-        key = input("  GITHUB_TOKEN (回车跳过): ").strip()
+        key = input("  GITHUB_TOKEN (): ").strip()
         if key:
             config.set("github_token", key)
-            print("  ✅ GitHub API 已提升至 5000 次/小时！")
+            print("  ✅ GitHub API  5000 /!")
         else:
-            print("  跳过。公开 API 也能用")
+            print("  . API ")
     print()
 
     # Step 3: Reddit — rdt-cli
-    print("【信息】Reddit — 必须登录态（无零配置路径）。桌面推荐 OpenCLI；或 rdt-cli：")
-    print(f"  安装：pipx install '{_RDT_GIT_SOURCE}'")
-    print("  然后运行：rdt login（需先在浏览器登录 reddit.com）")
+    print("【】Reddit — mustlogin session(configure).recommended on desktop OpenCLI; rdt-cli:")
+    print(f"  install:pipx install '{_RDT_GIT_SOURCE}'")
+    print("  run:rdt login(browserlog in reddit.com)")
     print()
 
     # Step 4: Groq (Whisper)
-    print("【可选】Groq API — 视频无字幕时的语音转文字")
-    print("  免费额度，注册: https://console.groq.com")
+    print("【】Groq API — videosubtitles")
+    print("  free,: https://console.groq.com")
     current = config.get("groq_api_key")
     if current:
-        print(f"  当前状态: ✅ 已配置")
+        print(f"  status: ✅ configured")
     else:
-        key = input("  GROQ_API_KEY (回车跳过): ").strip()
+        key = input("  GROQ_API_KEY (): ").strip()
         if key:
             config.set("groq_api_key", key)
-            print("  ✅ 语音转文字已开启！")
+            print("  ✅ !")
         else:
-            print("  跳过")
+            print("  ")
     print()
 
     # Summary
     print("=" * 40)
-    print(f"✅ 配置已保存到 {config.config_path}")
-    print("运行 agent-reach doctor 查看完整状态")
+    print(f"✅ configuresave {config.config_path}")
+    print("run agent-reach doctor status")
     print()
 
 
@@ -1610,15 +1610,15 @@ def _classify_update_error(exc):
 def _update_error_text(kind):
     """Map internal error kinds to user-facing text."""
     mapping = {
-        "timeout": "网络超时",
-        "dns": "DNS 解析失败",
-        "rate_limit": "GitHub API 速率限制",
-        "connection": "网络连接失败",
-        "server_error": "GitHub 服务暂时不可用",
-        "http": "HTTP 请求失败",
-        "unknown": "未知网络错误",
+        "timeout": "",
+        "dns": "DNS failed",
+        "rate_limit": "GitHub API ",
+        "connection": "failed",
+        "server_error": "GitHub available",
+        "http": "HTTP failed",
+        "unknown": "",
     }
-    return mapping.get(kind, "请求失败")
+    return mapping.get(kind, "failed")
 
 
 def _classify_github_response_error(resp):
@@ -1677,9 +1677,9 @@ def _github_get_with_retry(url, timeout=10, retries=3, sleeper=time.sleep):
 #: Full update = package + upstream tools + skill. The one-liner walks an
 #: agent through all three (docs/update.md); bare pip only updates the package.
 _UPDATE_INSTRUCTIONS = (
-    "更新方式（推荐，复制这句话给你的 AI Agent，会完整更新本体+上游工具+skill）：\n"
-    "  帮我更新 Agent Reach：https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/update.md\n"
-    "仅更新本体（不含上游工具和 skill）：\n"
+    "(recommended, AI Agent,+Tool+skill):\n"
+    "  Help me update Agent Reach:https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/update.md\n"
+    "(Tool skill):\n"
     "  pip install --upgrade https://github.com/Panniantong/agent-reach/archive/main.zip"
 )
 
@@ -1707,14 +1707,14 @@ def _cmd_check_update():
     """Check for newer versions on GitHub."""
     from agent_reach import __version__
 
-    print(f"当前版本: v{__version__}")
+    print(f": v{__version__}")
     release_url = "https://api.github.com/repos/Panniantong/Agent-Reach/releases/latest"
     commit_url = "https://api.github.com/repos/Panniantong/Agent-Reach/commits/main"
 
     # Fetch latest release with retry/backoff.
     resp, err, attempts = _github_get_with_retry(release_url, timeout=10, retries=3)
     if err:
-        print(f"[!] 无法检查更新（{_update_error_text(err)}，已重试 {attempts} 次）")
+        print(f"[!] ({_update_error_text(err)}, {attempts} )")
         return "error"
 
     if resp.status_code == 200:
@@ -1723,45 +1723,45 @@ def _cmd_check_update():
         body = data.get("body", "")
 
         if latest and _is_newer_version(latest, __version__):
-            print(f"最新版本: v{latest} ← 有更新！")
+            print(f": v{latest} ← !")
             if body:
                 print()
-                print("更新内容：")
+                print(":")
                 # Show first 20 lines of release notes
                 for line in body.strip().split("\n")[:20]:
                     print(f"  {line}")
             print()
             print(_UPDATE_INSTRUCTIONS)
             return "update_available"
-        print(f"✅ 已是最新版本")
+        print(f"✅ already the latest version")
         return "up_to_date"
 
     release_err = _classify_github_response_error(resp)
     if release_err == "rate_limit":
-        print("[!] 无法检查更新（GitHub API 速率限制，请稍后重试）")
+        print("[!] (GitHub API ,retry later)")
         return "error"
 
     # No releases yet, fall back to latest main commit.
     resp2, err2, attempts2 = _github_get_with_retry(commit_url, timeout=10, retries=2)
     if err2:
-        print(f"[!] 无法检查更新（{_update_error_text(err2)}，已重试 {attempts + attempts2} 次）")
+        print(f"[!] ({_update_error_text(err2)}, {attempts + attempts2} )")
         return "error"
     if resp2.status_code == 200:
         commit = resp2.json()
         sha = commit.get("sha", "")[:7]
         msg = commit.get("commit", {}).get("message", "").split("\n")[0]
         date = commit.get("commit", {}).get("committer", {}).get("date", "")[:10]
-        print(f"最新提交: {sha} ({date}) {msg}")
+        print(f": {sha} ({date}) {msg}")
         print()
         print(_UPDATE_INSTRUCTIONS)
         return "unknown"
 
     commit_err = _classify_github_response_error(resp2)
     if commit_err == "rate_limit":
-        print("[!] 无法检查更新（GitHub API 速率限制，请稍后重试）")
+        print("[!] (GitHub API ,retry later)")
         return "error"
 
-    print(f"[!] 无法检查更新（GitHub 返回 {resp2.status_code}）")
+    print(f"[!] (GitHub  {resp2.status_code})")
     return "error"
 
 
@@ -1785,9 +1785,9 @@ def _cmd_watch():
     # Find broken channels (were working, now broken)
     for key, r in results.items():
         if r["status"] in ("off", "error"):
-            issues.append(f"[X] {r['name']}：{r['message']}")
+            issues.append(f"[X] {r['name']}:{r['message']}")
         elif r["status"] == "warn":
-            issues.append(f"[!] {r['name']}：{r['message']}")
+            issues.append(f"[!] {r['name']}:{r['message']}")
 
     # Check for updates
     update_available = False
@@ -1808,12 +1808,12 @@ def _cmd_watch():
 
     # Output
     if not issues and not update_available:
-        print(f"Agent Reach: 全部正常 ({ok}/{total} 渠道可用，v{__version__} 已是最新)")
+        print(f"Agent Reach: OK ({ok}/{total} channels available, v{__version__})")
         return
 
-    print(f"Agent Reach 监控报告")
-    print(f"=" * 40)
-    print(f"版本: v{__version__}  |  渠道: {ok}/{total}")
+    print("Agent Reach status")
+    print("=" * 40)
+    print(f"Version: v{__version__}  |  Available channels: {ok}/{total}")
 
     if issues:
         print()
@@ -1822,12 +1822,12 @@ def _cmd_watch():
 
     if update_available:
         print()
-        print(f"新版本可用: v{new_version}")
+        print(f"Update available: v{new_version}")
         if release_body:
             for line in release_body.strip().split("\n")[:10]:
                 print(f"    {line}")
-        print("  更新（一句话发给 Agent 即可完整更新）：")
-        print("    帮我更新 Agent Reach：https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/update.md")
+        print("  Ask your agent to run:")
+        print("    Help me update Agent Reach:https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/update.md")
 
 
 if __name__ == "__main__":

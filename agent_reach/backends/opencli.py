@@ -89,7 +89,7 @@ def opencli_status(timeout: int = 10) -> OpenCLIStatus:
             installed=True,
             broken=True,
             hint=(
-                "opencli 命令存在但无法执行（node 环境损坏），重装：\n"
+                "opencli command exists butcannot execute(node ),reinstall:\n"
                 f"  npm install -g {OPENCLI_PACKAGE}"
             ),
         )
@@ -114,9 +114,9 @@ def opencli_status(timeout: int = 10) -> OpenCLIStatus:
         st.extension_installed = _extension_installed_on_disk()
         if not st.extension_installed:
             st.hint = (
-                "OpenCLI 已安装，但 Chrome 扩展未安装。\n"
-                f"  1. 安装扩展（需手动点一次）：{OPENCLI_EXTENSION_URL}\n"
-                "  2. 保持 Chrome 打开，运行 `opencli doctor` 验证"
+                "OpenCLI install, Chrome not installed.\n"
+                f"  1. install():{OPENCLI_EXTENSION_URL}\n"
+                "  2.  Chrome ,run `opencli doctor` "
             )
     return st
 
@@ -124,13 +124,13 @@ def opencli_status(timeout: int = 10) -> OpenCLIStatus:
 def opencli_summary(st: OpenCLIStatus) -> str:
     """One-line state description for channel messages / install output."""
     if not st.installed:
-        return "OpenCLI 未安装"
+        return "OpenCLI not installed"
     if st.broken:
-        return "OpenCLI 无法执行（node 环境损坏）"
+        return "OpenCLI cannot execute(node )"
     if st.extension_connected:
-        return f"OpenCLI 可用（浏览器登录态，v{st.version}）"
+        return f"OpenCLI available(browserlogin session,v{st.version})"
     if st.ready:
-        return "OpenCLI 可用（扩展睡眠中，调用时自动唤醒）"
+        return "OpenCLI available(,wake up)"
     if st.daemon_running:
-        return "OpenCLI 已安装，等待 Chrome 扩展安装"
-    return "OpenCLI 已安装（daemon 未运行，使用时自动启动；需 Chrome 扩展）"
+        return "OpenCLI install, Chrome install"
+    return "OpenCLI install(daemon run,auto-start; Chrome )"

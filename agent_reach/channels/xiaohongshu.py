@@ -148,7 +148,7 @@ def _clean_comment(comment):
 
 class XiaoHongShuChannel(Channel):
     name = "xiaohongshu"
-    description = "小红书笔记"
+    description = "Xiaohongshu"
     backends = ["OpenCLI", "xiaohongshu-mcp", "xhs-cli (xiaohongshu-cli)"]
     tier = 1
 
@@ -188,10 +188,10 @@ class XiaoHongShuChannel(Channel):
             return "error", "\n".join(m for _, _, m in findings)
 
         return "off", (
-            "未安装任何小红书后端。推荐：\n"
-            "  桌面：agent-reach install --channels opencli\n"
-            "       （复用 Chrome 登录态，刷过小红书即零配置可用）\n"
-            f"  服务器：xiaohongshu-mcp（自带无头浏览器+扫码登录）：{_MCP_INSTALL_URL}"
+            "not installedanyXiaohongshu.recommended:\n"
+            "  :agent-reach install --channels opencli\n"
+            "       ( Chrome login session,Xiaohongshuconfigureavailable)\n"
+            f"  :xiaohongshu-mcp(headless browser+scan QR codelog in):{_MCP_INSTALL_URL}"
         )
 
     def _check_opencli(self):
@@ -205,7 +205,7 @@ class XiaoHongShuChannel(Channel):
             return "error", st.hint
         if st.ready:
             return "ok", (
-                "OpenCLI 可用（复用浏览器登录态）。用法："
+                "OpenCLI available(reuse browserlogin session).:"
                 "opencli xiaohongshu search/note/comments/feed -f yaml"
             )
         return "warn", st.hint
@@ -219,12 +219,12 @@ class XiaoHongShuChannel(Channel):
         )
         if mcporter.ok and "xiaohongshu" in mcporter.output:
             return "ok", (
-                "xiaohongshu-mcp 服务运行中"
-                "（mcporter call 'xiaohongshu.search_feeds(keyword: \"...\")'）。"
-                "若未登录，让 agent 调 get_login_qrcode 扫码"
+                "xiaohongshu-mcp run"
+                "(mcporter call 'xiaohongshu.search_feeds(keyword: \"...\")')."
+                "not logged in, agent  get_login_qrcode scan QR code"
             )
         return "warn", (
-            "xiaohongshu-mcp 服务在跑但 mcporter 未接入。运行：\n"
+            "xiaohongshu-mcp  mcporter .run:\n"
             f"  mcporter config add xiaohongshu {_MCP_ENDPOINT}"
         )
 
@@ -236,23 +236,23 @@ class XiaoHongShuChannel(Channel):
         if probe.status == "missing":
             return None
         if probe.status == "broken":
-            return "error", "xhs 命令存在但无法执行\n" + probe.hint
+            return "error", "xhs command exists butcannot execute\n" + probe.hint
         if probe.status == "timeout":
-            return "warn", "xhs-cli 已安装但状态检测超时\n" + probe.hint
+            return "warn", "xhs-cli installstatus\n" + probe.hint
 
-        # 进程是活的（执行成功或运行后非零退出）——按输出内容分类
+        # (run)——
         if probe.ok and "ok: true" in probe.output:
             return "ok", (
-                "xhs-cli 可用（搜索、阅读、评论、热门；上游 2026-03 起停更，"
-                "桌面用户建议迁移到 OpenCLI）"
+                "xhs-cli available(search,,comments,trending; 2026-03 ,"
+                "users OpenCLI)"
             )
         if "not_authenticated" in probe.output or "expired" in probe.output:
             return "warn", (
-                "xhs-cli 已安装但未登录。运行：\n"
+                "xhs-cli installnot logged in.run:\n"
                 "  xhs login\n"
-                "（自动从浏览器提取 Cookie，或扫码登录）"
+                "(browser Cookie,scan QR codelog in)"
             )
         return "warn", (
-            "xhs-cli 已安装但状态异常。运行：\n"
-            "  xhs -v status 查看详细信息"
+            "xhs-cli installstatusexception.run:\n"
+            "  xhs -v status "
         )
